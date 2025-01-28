@@ -101,6 +101,24 @@ public class FlightService {
         flightRepository.save(flight);
     }
 
+    @Transactional
+    public FlightResponseDTO delayFlight(Long id, LocalDateTime newDepartureTime){
+        var flight = flightRepository.findById(id)
+                .orElseThrow(() -> new FlightNotFoundException("Flight not found with id: " + id));
+
+        if (newDepartureTime.isBefore(LocalDateTime.now())){
+            throw new InvalidFlightException("New departure time cannot be in the past");
+        }
+
+        Duration delay = Duration.between(flight.getDepartureTime(), newDepartureTime);
+
+        flight.setDepartureTime(newDepartureTime);
+        flight.setArrivalTime(flight.getArrivalTime().plus(delay));
+        flight.setStatus(FlightStatus.DELAYED);
+
+        return flightMapper.flightResponseDTO(flightRepository.save(flight));
+    }
+
     @Transactional(readOnly = true)
     public List<FlightResponseDTO> findAvailableFlights(
             Long originAirportid,

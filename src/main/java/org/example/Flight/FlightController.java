@@ -63,4 +63,13 @@ public class FlightController {
                 .status(HttpStatus.BAD_REQUEST)
                 .body(e.getMessage());
     }
+
+    @PatchMapping("/{id}/status")
+    @PreAuthorize("hasRole(´ADMIN´)")
+    public ResponseEntity<FlightResponseDTO> delayFlight(
+            @PathVariable Long id,
+            @RequestBody LocalDateTime newDepartureTime){
+        return ResponseEntity.ok(flightService.delayFlight(id, newDepartureTime));
+    }
+
 }
