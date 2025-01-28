@@ -129,6 +129,21 @@ public class FlightService {
         return flightMapper.flightResponseDTO(flightRepository.save(flight));
     }
 
+    @Transactional
+    public FlightResponseDTO cancelFlight(Long id){
+        var flight = flightRepository.findById(id)
+                .orElseThrow(() -> new FlightNotFoundException("Flight not found with id: " + id));
+
+        if (flight.getStatus() == FlightStatus.DEPARTED ||
+            flight.getStatus() == FlightStatus.ARRIVED){
+        throw new InvalidFlightException("Cannot cancel a flight that has already departed or arrived");
+        }
+        flight.setStatus(FlightStatus.CANCELLED);
+        flight.setActive(false);
+
+        return flightMapper.flightResponseDTO(flightRepository.save(flight));
+    }
+
     @Transactional(readOnly = true)
     public List<FlightResponseDTO> findAvailableFlights(
             Long originAirportid,

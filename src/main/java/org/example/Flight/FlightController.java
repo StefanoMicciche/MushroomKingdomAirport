@@ -73,11 +73,16 @@ public class FlightController {
     }
 
     @PatchMapping("/{id}/status")
-    @PreAuthorize("harRole(´ADMIN´)")
+    @PreAuthorize("hasRole(´ADMIN´)")
     public ResponseEntity<FlightResponseDTO> updateFlightStatus(
             @PathVariable Long id,
             @RequestBody FlightStatus status){
         return ResponseEntity.ok(flightService.updateFlightStatus(id, status));
     }
 
+    @PatchMapping("/{id}/cancel")
+    @PreAuthorize("hasRole(´ADMIN´)")
+    public ResponseEntity<FlightResponseDTO>cancelFlight(@PathVariable Long id){
+        return ResponseEntity.ok(flightService.cancelFlight(id));
+    }
 }
