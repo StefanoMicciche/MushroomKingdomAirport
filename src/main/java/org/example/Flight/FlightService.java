@@ -119,6 +119,16 @@ public class FlightService {
         return flightMapper.flightResponseDTO(flightRepository.save(flight));
     }
 
+    @Transactional
+    public FlightResponseDTO updateFlightStatus(Long id, FlightStatus newStatus){
+        var flight = flightRepository.findById(id)
+                .orElseThrow(() -> new FlightNotFoundException("Flight not found with id: " + id));
+        validateStatusUpdate(flight.getStatus(), newStatus);
+        flight.setStatus(newStatus);
+
+        return flightMapper.flightResponseDTO(flightRepository.save(flight));
+    }
+
     @Transactional(readOnly = true)
     public List<FlightResponseDTO> findAvailableFlights(
             Long originAirportid,
@@ -189,6 +199,32 @@ public class FlightService {
 
         if (!validationErrors.isEmpty()){
             throw new InvalidFlightException("Flight validation failed: " + String.join(",", validationErrors));
+        }
+    }
+    private void validateStatusUpdate(FlightStatus currentStatus, FlightStatus newStatus){
+        if (currentStatus == FlightStatus.CANCELLED){
+            throw new InvalidFlightException("Cannot update status of a cancelled flight");
+        }
+
+        if (currentStatus == FlightStatus.ARRIVED){
+            throw new InvalidFlightException("Cannot update status of a completed flight");
+        }
+
+        switch (newStatus){
+            case BOARDING:
+                if (currentStatus != FlightStatus.SCHEDULED && currentStatus != FlightStatus.DELAYED){
+                    throw new InvalidFlightException("can only start boarding from SCHEDULED status");
+                }
+                break;
+            case DEPARTED:
+                if (currentStatus != FlightStatus.BOARDING){
+                    throw new InvalidFlightException("Flight must be in BOARDING status before DEPARTED");
+                }
+                break;
+            case ARRIVED:
+                if (currentStatus != FlightStatus.DEPARTED && currentStatus != FlightStatus.IN_FLIGHT){
+                    throw new InvalidFlightException("Flight must be DEPARTED or IN_FLIGHT before ARRIVED");
+                }
         }
     }
 }

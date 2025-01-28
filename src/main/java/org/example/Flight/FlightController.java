@@ -72,4 +72,12 @@ public class FlightController {
         return ResponseEntity.ok(flightService.delayFlight(id, newDepartureTime));
     }
 
+    @PatchMapping("/{id}/status")
+    @PreAuthorize("harRole(´ADMIN´)")
+    public ResponseEntity<FlightResponseDTO> updateFlightStatus(
+            @PathVariable Long id,
+            @RequestBody FlightStatus status){
+        return ResponseEntity.ok(flightService.updateFlightStatus(id, status));
+    }
+
 }
