@@ -2,6 +2,10 @@ package org.example.User;
 
 import org.springframework.stereotype.Component;
 
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Component
 public class UserMapper {
 
@@ -35,5 +39,25 @@ public class UserMapper {
         userResponseDTO.setActive(userEntity.getActive());
 
         return userResponseDTO;
+    }
+
+    public void updateEntity(UserEntity userEntity, UserRequestDTO userRequestDTO){
+        if (userRequestDTO == null){
+            return;
+        }
+
+        userEntity.setUsername(userRequestDTO.getUsername());
+        userEntity.setEmail(userRequestDTO.getEmail());
+        userEntity.setFirstName(userRequestDTO.getFirstName());
+        userEntity.setLastName(userRequestDTO.getLastName());
+    }
+
+    public List<UserResponseDTO> toResponseList(List<UserEntity> entities){
+        if (entities == null){
+            return Collections.emptyList();
+        }
+        return entities.stream()
+                .map(this::responseDTO)
+                .collect(Collectors.toList());
     }
 }
