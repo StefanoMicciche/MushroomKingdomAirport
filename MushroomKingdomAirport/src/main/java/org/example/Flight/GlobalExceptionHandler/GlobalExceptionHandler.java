@@ -1,4 +1,4 @@
-package org.example.GlobalExceptionHandler;
+package org.example.Flight.GlobalExceptionHandler;
 
 import org.example.Flight.Exceptions.FlightNotFoundException;
 import org.example.Flight.Exceptions.InvalidFlightException;

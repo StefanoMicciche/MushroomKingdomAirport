@@ -3,6 +3,7 @@ package org.example.Airport.airport;
 import lombok.RequiredArgsConstructor;
 import org.example.Airport.airport.Enums.AirportSize;
 import org.example.Airport.airport.Exceptions.AirportNotFoundException;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
@@ -10,7 +11,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-
+@Component
 public class AirportService {
 
     private final AirportRepository airportRepository;

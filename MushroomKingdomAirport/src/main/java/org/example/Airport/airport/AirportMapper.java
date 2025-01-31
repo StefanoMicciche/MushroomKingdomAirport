@@ -25,4 +25,8 @@ public class AirportMapper {
                 .active(airportEntity.getActive())
                 .build();
     }
+
+    public byte[] writeValueAsString(AirpotRequestDTO airpotRequestDTO) {
+        return null;
+    }
 }
